@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">P1_0918</string>
+    <string name="user_name">User</string>
+    <string name="red">紅色</string>
+    <string name="enlarge">放大</string>
+    <string name="reduce">縮小</string>
+    <string name="blue">藍色</string>
+    <string name="bold">粗體</string>
+    <string name="italic">斜體</string>
+    <string name="clear">清除</string>
+    <string name="reset">還原</string>
+    <string name="enter">確定</string>
+    <string name="hello">Hello World!</string>
+    <string name="name">Name</string>
+</resources>
