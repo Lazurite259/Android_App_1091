@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -50,7 +49,7 @@ public class MainActivity extends AppCompatActivity
         ((Spinner)findViewById(R.id.spinnerTicketCategory)).setOnItemSelectedListener(this);
     }
 
-    //設定起站的下拉選單
+    //設定下拉選單
     public void setSpinner(ArrayList<String> arrayList, int id){
         ArrayAdapter<String> adp=new ArrayAdapter<>(
                 this, R.layout.spinner_item, arrayList

@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">P1030</string>
+
+    <string-array name="question">
+        <item>什麼門永遠關不上？</item>
+        <item>什麼東西沒人愛吃？</item>
+        <item>什麼瓜不能吃？</item>
+        <item>AlertDialog</item>
+        <item>DatePicker</item>
+        <item>TimePicker</item>
+    </string-array>
+</resources>
