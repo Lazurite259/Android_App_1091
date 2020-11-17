@@ -2,12 +2,21 @@ package ncku.geomatics.p7_1113;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 public class MainActivity2 extends AppCompatActivity
-        implements View.OnClickListener {
+        implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+
+    String[] catalog = {"餐廳", "飲料店", "甜品店"};
+    String textCatalog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -15,18 +24,41 @@ public class MainActivity2 extends AppCompatActivity
         setContentView(R.layout.activity_main2);
         setTitle("新增店家");
 
-        ((Button)findViewById(R.id.buttonEnter)).setOnClickListener(this);
-        ((Button)findViewById(R.id.buttonCancel)).setOnClickListener(this);
+        findViewById(R.id.buttonEnter).setOnClickListener(this);
+        findViewById(R.id.buttonCancel).setOnClickListener(this);
+        setSpinner(catalog);
+    }
 
+    //設定下拉選單
+    public void setSpinner(String[] str) {
+        ArrayAdapter<String> adp2 = new ArrayAdapter<>(
+                this, R.layout.spinner_item, str);
+        adp2.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        ((Spinner) findViewById(R.id.spinnerCatalog)).setAdapter(adp2);
+        ((Spinner) findViewById(R.id.spinnerCatalog)).setOnItemSelectedListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        if(v.getId()==R.id.buttonEnter){
+        Intent it2 = new Intent();
+        if (v.getId() == R.id.buttonEnter) {
+            String textStore = ((EditText) findViewById(R.id.editTextStore)).getText().toString();
+            it2.putExtra("content", textStore);
+            it2.putExtra("catalog", textCatalog);
+            setResult(RESULT_OK, it2);
+        } else {
+            setResult(RESULT_CANCELED);
+        }
+        finish();
+    }
 
-        }
-        else {
-            finish();
-        }
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        textCatalog = ((TextView) view).getText().toString();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 }
