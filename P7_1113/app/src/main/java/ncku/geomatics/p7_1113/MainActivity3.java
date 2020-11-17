@@ -17,20 +17,20 @@ public class MainActivity3 extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main3);
-        setTitle("搜尋紀錄");
+        setTitle("查詢紀錄");
 
-        Intent it4=new Intent();
-        ArrayList<String> getHistory=it4.getStringArrayListExtra("history");
+        //取得查詢紀錄
+        Intent it4 = getIntent();
+        ArrayList<String> getHistory = it4.getStringArrayListExtra("history");
         setListView(getHistory);
-
         findViewById(R.id.buttonReturn).setOnClickListener(this);
     }
 
     //設定選單
     public void setListView(ArrayList<String> arrayList) {
-        ArrayAdapter<String> adp = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, arrayList);
-        ListView lv = findViewById(R.id.listViewStore);
-        lv.setAdapter(adp);
+        ArrayAdapter<String> adp3 = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, arrayList);
+        ListView lv = findViewById(R.id.listViewHistory);
+        lv.setAdapter(adp3);
     }
 
     @Override

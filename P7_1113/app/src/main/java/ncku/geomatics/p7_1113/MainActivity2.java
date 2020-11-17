@@ -12,6 +12,9 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class MainActivity2 extends AppCompatActivity
         implements View.OnClickListener,
         AdapterView.OnItemSelectedListener {
@@ -28,6 +31,11 @@ public class MainActivity2 extends AppCompatActivity
         findViewById(R.id.buttonEnter).setOnClickListener(this);
         findViewById(R.id.buttonCancel).setOnClickListener(this);
         setSpinner(catalog, R.id.spinnerChoseCatelog);
+        //取得原視窗選取類別
+        Intent it4 = getIntent();
+        String getCatalog = it4.getStringExtra("catalog");
+        int position = Arrays.asList(catalog).indexOf(getCatalog);
+        ((Spinner) findViewById(R.id.spinnerChoseCatelog)).setSelection(position);
     }
 
     //設定下拉選單
@@ -43,14 +51,16 @@ public class MainActivity2 extends AppCompatActivity
     public void onClick(View v) {
         Intent it2 = new Intent();
         if (v.getId() == R.id.buttonEnter) {
+            //回傳新增店家店名和類別
             String textStore = ((EditText) findViewById(R.id.editTextStore)).getText().toString();
             it2.putExtra("content", textStore);
             it2.putExtra("catalog", textCatalog);
             setResult(RESULT_OK, it2);
         } else {
+            //取消
             setResult(RESULT_CANCELED);
         }
-        finish();
+        finish(); //關閉視窗
     }
 
     @Override
