@@ -13,7 +13,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 public class MainActivity2 extends AppCompatActivity
-        implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+        implements View.OnClickListener,
+        AdapterView.OnItemSelectedListener {
 
     String[] catalog = {"餐廳", "飲料店", "甜品店"};
     String textCatalog;
@@ -26,16 +27,16 @@ public class MainActivity2 extends AppCompatActivity
 
         findViewById(R.id.buttonEnter).setOnClickListener(this);
         findViewById(R.id.buttonCancel).setOnClickListener(this);
-        setSpinner(catalog);
+        setSpinner(catalog, R.id.spinnerChoseCatelog);
     }
 
     //設定下拉選單
-    public void setSpinner(String[] str) {
+    public void setSpinner(String[] str, int id) {
         ArrayAdapter<String> adp2 = new ArrayAdapter<>(
                 this, R.layout.spinner_item, str);
         adp2.setDropDownViewResource(R.layout.spinner_dropdown_item);
-        ((Spinner) findViewById(R.id.spinnerCatalog)).setAdapter(adp2);
-        ((Spinner) findViewById(R.id.spinnerCatalog)).setOnItemSelectedListener(this);
+        ((Spinner) findViewById(id)).setAdapter(adp2);
+        ((Spinner) findViewById(id)).setOnItemSelectedListener(this);
     }
 
     @Override
