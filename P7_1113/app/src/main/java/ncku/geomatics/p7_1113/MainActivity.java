@@ -120,7 +120,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         arraysToArrayList(alCatalog, choseCatalog);
-        alCatalog.remove(position);
+        if (position != alCatalog.size() - 1) {
+            alCatalog.remove(position);
+        }
         arrayListToArrays(alCatalog, choseCatalog);
         adp.notifyDataSetChanged();
         return true;
@@ -153,9 +155,9 @@ public class MainActivity extends AppCompatActivity
             arraysToArrayList(alNewCatalog, getCatalog);
             alNewCatalog.add(alNewCatalog.size() - 1, getStore);
             arrayListToArrays(alNewCatalog, getCatalog);
-            if (getCatalog.equals(choseCatalog)) {
-                setListView(alNewCatalog);
-            }
+            setListView(alNewCatalog);
+            ((Spinner) findViewById(R.id.spinnerCatalog)).setSelection(Arrays.asList(catalog).indexOf(getCatalog));
+
         }
     }
 
