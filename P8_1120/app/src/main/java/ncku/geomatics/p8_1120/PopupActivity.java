@@ -5,14 +5,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class PopupActivity extends AppCompatActivity
         implements View.OnClickListener {
 
     ArrayList<String> getHistory = new ArrayList<>();
+    String name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,11 +30,14 @@ public class PopupActivity extends AppCompatActivity
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.buttonStart) {
-            //開始遊戲
-            Intent it2 = new Intent();
-            it2.putExtra("content", "start");
-            setResult(RESULT_OK, it2);
-            finish();
+            name = ((EditText) findViewById(R.id.editTextName)).getText().toString();
+            if (!name.equals("")) {
+                //開始遊戲
+                Intent it2 = new Intent();
+                it2.putExtra("name", name);
+                setResult(RESULT_OK, it2);
+                finish();
+            }
         } else if (v.getId() == R.id.buttonHistory) {
             //開啟歷史紀錄
             Intent it4 = new Intent();

@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity
     TextView tvC;
     Chronometer timer;
     ArrayList<String> alHistory = new ArrayList<>();
+    String name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity
         paramsBear = (ConstraintLayout.LayoutParams) ivBear.getLayoutParams();
         //開啟首頁
         it.setClass(this, PopupActivity.class);
-        String[] history = {"日期", "名字", "數量", "花費時間"};
+        String[] history = {"日期", "時間", "名字", "數量", "花費時間"};
         alHistory.addAll(Arrays.asList(history));
         it.putExtra("history", alHistory);
         startActivityForResult(it, 99);
@@ -89,11 +90,10 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 99 && resultCode == RESULT_OK) {
-            String str = null;
             if (data != null) {
-                str = data.getStringExtra("content");
+                name = data.getStringExtra("name");
             }
-            if (str != null && str.equals("start")) {
+            if (!name.equals("")) {
                 reset();
             }
         }
@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity
             //建立警示窗
             new AlertDialog.Builder(this)
                     .setIcon(R.drawable.bomb)
-                    .setTitle("遊戲結束").setMessage("花費時間：" + endTime + "\n吃魚次數：" + count)
+                    .setTitle("遊戲結束").setMessage("花費時間：" + endTime + "\n吃魚數量：" + count)
                     .setPositiveButton("重新開始", this)
                     .setNegativeButton("返回首頁", this)
                     .setCancelable(false)
@@ -152,11 +152,13 @@ public class MainActivity extends AppCompatActivity
             ivBear.setVisibility(View.GONE);
             //取得現在時間
             Calendar calendar = Calendar.getInstance();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd");
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
             String date = dateFormat.format(calendar.getTime());
+            String time = timeFormat.format(calendar.getTime());
             //新增歷史紀錄
-            String[] newHistory = {date, "name", count + "", endTime};
-            alHistory.addAll(Arrays.asList(newHistory));
+            String[] newHistory = {date, time, name, count + "", endTime};
+            alHistory.addAll(5, Arrays.asList(newHistory));
             it.putExtra("history", alHistory);
             count = 0; //歸零
         }
