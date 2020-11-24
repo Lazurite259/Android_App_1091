@@ -18,6 +18,10 @@ import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity
@@ -30,6 +34,7 @@ public class MainActivity extends AppCompatActivity
     int count = 0;
     TextView tvC;
     Chronometer timer;
+    ArrayList<String> alHistory = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,20 +45,22 @@ public class MainActivity extends AppCompatActivity
         SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         Sensor srA = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sensorManager.registerListener(this, srA, SensorManager.SENSOR_DELAY_NORMAL);
-        //取得影像控制權
+        //取得控制權
         ivPenguin = findViewById(R.id.imageViewPenguin);
         ivFish = findViewById(R.id.imageViewFish);
         ivBear = findViewById(R.id.imageViewBear);
+        timer = findViewById(R.id.chronometer);
+        tvC = findViewById(R.id.textViewCount);
         //取得影像參數
         paramsPenguin = (ConstraintLayout.LayoutParams) ivPenguin.getLayoutParams();
         paramsFish = (ConstraintLayout.LayoutParams) ivFish.getLayoutParams();
         paramsBear = (ConstraintLayout.LayoutParams) ivBear.getLayoutParams();
         //開啟首頁
         it.setClass(this, PopupActivity.class);
+        String[] history = {"日期", "名字", "數量", "花費時間"};
+        alHistory.addAll(Arrays.asList(history));
+        it.putExtra("history", alHistory);
         startActivityForResult(it, 99);
-
-        timer = findViewById(R.id.chronometer);
-        tvC = findViewById(R.id.textViewCount);
     }
 
     public void setImagePosition(ConstraintLayout.LayoutParams params, ImageView imageView) {
@@ -64,7 +71,18 @@ public class MainActivity extends AppCompatActivity
             params.verticalBias = ((float) random.nextInt(97) + 2) / 100;
             params.horizontalBias = ((float) random.nextInt(97) + 2) / 100;
             imageView.setLayoutParams(params);
-        } while (params.horizontalBias < 0.6 && params.horizontalBias > 0.4 && params.verticalBias < 0.6 && params.verticalBias > 0.4);
+        } while (params.horizontalBias < 0.6 && params.horizontalBias > 0.4
+                && params.verticalBias < 0.6 && params.verticalBias > 0.4);
+    }
+
+    public void reset() {
+        //設定魚位置
+        setImagePosition(paramsFish, ivFish);
+        //計時器重新開始計算
+        timer.setBase(SystemClock.elapsedRealtime());
+        timer.start();
+        tvC.setText(count + ""); //顯示次數
+        ivFish.setVisibility(View.VISIBLE); //顯示魚
     }
 
     @Override
@@ -76,20 +94,14 @@ public class MainActivity extends AppCompatActivity
                 str = data.getStringExtra("content");
             }
             if (str != null && str.equals("start")) {
-                //設定星星位置
-                setImagePosition(paramsFish, ivFish);
-                //計時器重新開始計算
-                timer.setBase(SystemClock.elapsedRealtime());
-                timer.start();
-                tvC.setText(count + "");
-                ivFish.setVisibility(View.VISIBLE);
+                reset();
             }
         }
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        //移動小精靈
+        //移動企鵝
         float x = event.values[0];
         float y = event.values[1];
         if (x > 7.5) {
@@ -105,20 +117,23 @@ public class MainActivity extends AppCompatActivity
         paramsPenguin.verticalBias = (float) ((7.5 + y) / 15);
         paramsPenguin.horizontalBias = (float) ((7.5 - x) / 15);
         ivPenguin.setLayoutParams(paramsPenguin);
-        //小精靈吃到星星以後重新設定星星位置
+        //企鵝吃到魚以後重新設定魚位置
         if (Math.abs(paramsPenguin.verticalBias - paramsFish.verticalBias) < 0.06
                 && Math.abs(paramsPenguin.horizontalBias - paramsFish.horizontalBias) < 0.06) {
-            count++;
+            count++; //數量加一
             tvC.setText(count + "");
             setImagePosition(paramsFish, ivFish);
             if (count >= 5) {
+                //顯示熊
                 ivBear.setVisibility(View.VISIBLE);
                 setImagePosition(paramsBear, ivBear);
             }
         }
-        if (Math.abs(paramsPenguin.verticalBias - paramsBear.verticalBias) < 0.04
-                && Math.abs(paramsPenguin.horizontalBias - paramsBear.horizontalBias) < 0.04) {
-            String endTime = timer.getText().toString();
+        //企鵝碰到熊以後結束，並跳出警示窗
+        if (Math.abs(paramsPenguin.verticalBias - paramsBear.verticalBias) < 0.05
+                && Math.abs(paramsPenguin.horizontalBias - paramsBear.horizontalBias) < 0.05) {
+            String endTime = timer.getText().toString(); //結束時間
+            //建立警示窗
             new AlertDialog.Builder(this)
                     .setIcon(R.drawable.bomb)
                     .setTitle("遊戲結束").setMessage("花費時間：" + endTime + "\n吃魚次數：" + count)
@@ -126,14 +141,24 @@ public class MainActivity extends AppCompatActivity
                     .setNegativeButton("返回首頁", this)
                     .setCancelable(false)
                     .show();
-            timer.stop();
+            timer.stop(); //停止計時
+            //魚位置歸零、消失
             paramsFish.verticalBias = 0;
             paramsFish.horizontalBias = 0;
             ivFish.setVisibility(View.GONE);
+            //熊位置歸零、消失
             paramsBear.verticalBias = 0;
             paramsBear.horizontalBias = 0;
             ivBear.setVisibility(View.GONE);
-            count = 0;
+            //取得現在時間
+            Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+            String date = dateFormat.format(calendar.getTime());
+            //新增歷史紀錄
+            String[] newHistory = {date, "name", count + "", endTime};
+            alHistory.addAll(Arrays.asList(newHistory));
+            it.putExtra("history", alHistory);
+            count = 0; //歸零
         }
     }
 
@@ -145,14 +170,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onClick(DialogInterface dialog, int which) {
         if (which == DialogInterface.BUTTON_POSITIVE) {
-            //設定星星位置
-            setImagePosition(paramsFish, ivFish);
-            //計時器重新開始計算
-            timer.setBase(SystemClock.elapsedRealtime());
-            timer.start();
-            tvC.setText(count + "");
-            ivFish.setVisibility(View.VISIBLE);
+            reset(); //重設
         } else if (which == DialogInterface.BUTTON_NEGATIVE) {
+            //回到首頁
             startActivityForResult(it, 99);
         }
     }
