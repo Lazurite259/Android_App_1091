@@ -11,6 +11,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.view.View;
 import android.widget.Chronometer;
 import android.widget.ImageView;
 
@@ -18,39 +19,69 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
-    ImageView ivStar, ivElf, ivBomb;
-    ConstraintLayout.LayoutParams paramsStar, paramsElf, paramsBomb;
+    ImageView ivFish1, ivFish2, ivFish3, ivFish4, ivPenguin, ivBomb1;
+    ConstraintLayout constraintLayout;
+    ConstraintLayout.LayoutParams paramsFish1, paramsPenguin, paramsBear;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        constraintLayout = findViewById(R.id.root);
+        //設置重力感測器
         SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         Sensor srA = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sensorManager.registerListener(this, srA, SensorManager.SENSOR_DELAY_NORMAL);
-
-        ivElf = findViewById(R.id.imageViewElf);
-        ivStar = findViewById(R.id.imageViewStar);
-        ivBomb = findViewById(R.id.imageViewBomb);
-        paramsElf = (ConstraintLayout.LayoutParams) ivElf.getLayoutParams();
-        paramsStar = (ConstraintLayout.LayoutParams) ivStar.getLayoutParams();
-        paramsBomb = (ConstraintLayout.LayoutParams) ivBomb.getLayoutParams();
+        //取得影像控制權
+        ivPenguin = findViewById(R.id.imageViewPenguin);
+        ivFish1 = findViewById(R.id.imageViewFish1);
+//        ivFish2 = findViewById(R.id.imageViewFish2);
+//        ivFish3 = findViewById(R.id.imageViewFish3);
+//        ivFish4 = findViewById(R.id.imageViewFish4);
+//        ivBomb1 = findViewById(R.id.imageViewBear1);
+        //取得影像參數
+        paramsPenguin = (ConstraintLayout.LayoutParams) ivPenguin.getLayoutParams();
+        paramsFish1 = (ConstraintLayout.LayoutParams) ivFish1.getLayoutParams();
+        paramsBear = (ConstraintLayout.LayoutParams) ivBomb1.getLayoutParams();
+        //開啟首頁
         Intent it = new Intent();
         it.setClass(this, PopupActivity.class);
         startActivityForResult(it, 99);
     }
 
-    public void setImagePosition(ConstraintLayout.LayoutParams params, ImageView imageView) {
+    public void addImage() {
+        ImageView iv = new ImageView(this);
+        iv.setImageResource(R.drawable.fish);
+        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) iv.getLayoutParams();
+        params.topToTop=0;
+        params.bottomToBottom=0;
+        params.endToEnd=0;
+        params.startToStart=0;
         do {
+            //隨機設定影像XY座標
+            Random random = new Random();
+            params.verticalBias = ((float) random.nextInt(97) + 2) / 100;
+            params.horizontalBias = ((float) random.nextInt(97) + 2) / 100;
+            iv.setLayoutParams(params);
+            //計時器重新開始計算
+            Chronometer timer = findViewById(R.id.chronometer);
+            timer.setBase(SystemClock.elapsedRealtime());
+            timer.start();
+        } while (params.horizontalBias < 0.6 && params.horizontalBias > 0.4 && params.verticalBias < 0.6 && params.verticalBias > 0.4);
+        constraintLayout.addView(iv);
+        setContentView(constraintLayout);
+    }
+
+    public void setImagePosition(ConstraintLayout.LayoutParams params, ImageView imageView) {
+        //當影像在中心區域時，重新設置座標
+        do {
+            //隨機設定影像XY座標
             Random random = new Random();
             params.verticalBias = ((float) random.nextInt(97) + 2) / 100;
             params.horizontalBias = ((float) random.nextInt(97) + 2) / 100;
             imageView.setLayoutParams(params);
-            Chronometer timer = findViewById(R.id.chronometer);
-            timer.setBase(SystemClock.elapsedRealtime());
-            timer.start();
-        } while (paramsStar.horizontalBias < 0.6 && paramsStar.horizontalBias > 0.4 && paramsStar.verticalBias < 0.6 && paramsStar.verticalBias > 0.4);
+        } while (params.horizontalBias < 0.6 && params.horizontalBias > 0.4 && params.verticalBias < 0.6 && params.verticalBias > 0.4);
     }
 
     @Override
@@ -62,16 +93,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 str = data.getStringExtra("content");
             }
             if (str != null && str.equals("start")) {
-                setImagePosition(paramsStar, ivStar);
+                //設定星星位置
+                //setImagePosition(paramsFish1, ivFish1);
+                addImage();
             }
         }
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+        //移動小精靈
         float x = event.values[0];
         float y = event.values[1];
-        paramsElf = (ConstraintLayout.LayoutParams) ivElf.getLayoutParams();
+        paramsPenguin = (ConstraintLayout.LayoutParams) ivPenguin.getLayoutParams();
         if (x > 7.5) {
             x = (float) 7.5;
         } else if (x < -7.5) {
@@ -82,13 +116,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         } else if (y < -7.5) {
             y = (float) -7.5;
         }
-        paramsElf.verticalBias = (float) ((7.5 + y) / 15);
-        paramsElf.horizontalBias = (float) ((7.5 - x) / 15);
-        ivElf.setLayoutParams(paramsElf);
-
-        if (Math.abs(paramsElf.verticalBias - paramsStar.verticalBias) < 0.05 && Math.abs(paramsElf.horizontalBias - paramsStar.horizontalBias) < 0.05) {
-            setImagePosition(paramsStar, ivStar);
-        }
+        paramsPenguin.verticalBias = (float) ((7.5 + y) / 15);
+        paramsPenguin.horizontalBias = (float) ((7.5 - x) / 15);
+        ivPenguin.setLayoutParams(paramsPenguin);
+        //小精靈吃到星星以後重新設定星星位置
+//        if (Math.abs(paramsPenguin.verticalBias - paramsFish1.verticalBias) < 0.05 && Math.abs(paramsPenguin.horizontalBias - paramsFish1.horizontalBias) < 0.05) {
+//            setImagePosition(paramsFish1, ivFish1);
+//        }
     }
 
     @Override

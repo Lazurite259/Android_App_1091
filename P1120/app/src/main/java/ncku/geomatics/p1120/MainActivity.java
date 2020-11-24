@@ -45,36 +45,36 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             aValues = event.values;
         }
-//        if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-//            mValues = event.values;
-//        }
+        if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+            mValues = event.values;
+        }
         float x = event.values[0];
         float y = event.values[1];
         float z = event.values[2];
 
-        String s = "X:" + aValues[0] + "\nY:" + aValues[1] + "\nZ:" + aValues[2];
-        ((TextView) findViewById(R.id.textView)).setText(s);
-//        if (mValues != null && aValues != null) {
-//            String s = "X:" + aValues[0] + "\nY:" + aValues[1] + "\nZ:" + aValues[2]
-//            + "\nX:" + mValues[0] + "\nY:" + mValues[1] + "\nZ:" + mValues[2];
-//            ((TextView) findViewById(R.id.textView)).setText(s);
-//
-//            float[] Rotation = new float[9];
-//            float[] degree = new float[3];
-//            SensorManager.getRotationMatrix(Rotation, null, aValues, mValues);
-//            SensorManager.getOrientation(Rotation, degree);
-//            float angle = (float) Math.toDegrees(degree[0]);
-//            ((TextView) findViewById(R.id.textView)).setText(angle + "");
-//
-//            ImageView iv = findViewById(R.id.imageView2);
-//            iv.setRotation(angle);
-//        }
-//        if (Math.abs(x) < 1 && Math.abs(y) < 1 && z < -9) {
-//            ((TextView) findViewById(R.id.textView)).setText("手機覆蓋");
-//        }
-//        if (Math.abs(x) + Math.abs(y) + Math.abs(z) > 32) {
-//            vb.vibrate(3000);
-//        }
+//        String s = "X:" + aValues[0] + "\nY:" + aValues[1] + "\nZ:" + aValues[2];
+//        ((TextView) findViewById(R.id.textView)).setText(s);
+        if (mValues != null && aValues != null) {
+            String s = "X:" + aValues[0] + "\nY:" + aValues[1] + "\nZ:" + aValues[2]
+            + "\nX:" + mValues[0] + "\nY:" + mValues[1] + "\nZ:" + mValues[2];
+            ((TextView) findViewById(R.id.textView)).setText(s);
+
+            float[] Rotation = new float[9];
+            float[] degree = new float[3];
+            SensorManager.getRotationMatrix(Rotation, null, aValues, mValues);
+            SensorManager.getOrientation(Rotation, degree);
+            float angle = (float) Math.toDegrees(degree[0]);
+            ((TextView) findViewById(R.id.textView)).setText(angle + "");
+
+            ImageView iv = findViewById(R.id.imageView2);
+            iv.setRotation(angle);
+        }
+        if (Math.abs(x) < 1 && Math.abs(y) < 1 && z < -9) {
+            ((TextView) findViewById(R.id.textView)).setText("手機覆蓋");
+        }
+        if (Math.abs(x) + Math.abs(y) + Math.abs(z) > 32) {
+            vb.vibrate(3000);
+        }
 
         ImageView iv = findViewById(R.id.imageView);
         ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) iv.getLayoutParams();

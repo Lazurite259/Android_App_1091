@@ -20,8 +20,8 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
-        android:id="@+id/imageViewStar"
-        android:layout_width="40dp"
+        android:id="@+id/imageViewFish1"
+        android:layout_width="60dp"
         android:layout_height="60dp"
         android:scaleType="centerInside"
         android:visibility="visible"
@@ -30,10 +30,49 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/star" />
+        app:srcCompat="@drawable/fish" />
 
     <ImageView
-        android:id="@+id/imageViewElf"
+        android:id="@+id/imageViewFish2"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:scaleType="centerInside"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/fish" />
+
+    <ImageView
+        android:id="@+id/imageViewFish3"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:scaleType="centerInside"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/fish" />
+
+    <ImageView
+        android:id="@+id/imageViewFish4"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:scaleType="centerInside"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/fish" />
+
+    <ImageView
+        android:id="@+id/imageViewPenguin"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:scaleType="centerInside"
@@ -41,12 +80,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/elf" />
+        app:srcCompat="@drawable/penguin" />
 
     <ImageView
-        android:id="@+id/imageViewBomb"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:id="@+id/imageViewBear1"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
         android:scaleType="centerInside"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -54,5 +93,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/bomb" />
+        app:srcCompat="@drawable/bear" />
 </androidx.constraintlayout.widget.ConstraintLayout>
