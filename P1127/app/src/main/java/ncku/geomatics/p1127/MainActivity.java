@@ -7,11 +7,13 @@ import androidx.core.app.ActivityCompat;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.widget.EditText;
+import android.widget.TextView;
 
 //Step 1
 public class MainActivity extends AppCompatActivity
@@ -41,6 +43,8 @@ public class MainActivity extends AppCompatActivity
                     200);
             return;
         }
+        String provider =locationManager.getBestProvider(new Criteria(),true);
+        ((TextView)findViewById(R.id.textView)).setText(provider);
         locationManager.requestLocationUpdates("gps", 5000, 5, this);
     }
 
