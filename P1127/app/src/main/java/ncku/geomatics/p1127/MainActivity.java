@@ -14,6 +14,8 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -31,6 +33,35 @@ import java.util.Locale;
 //Step 1
 public class MainActivity extends AppCompatActivity
         implements LocationListener, OnMapReadyCallback {
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.item1) {
+            if (!item.isChecked()) {
+                map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                item.setChecked(true);
+            } else {
+                map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                item.setChecked(false);
+            }
+        }
+        else if (item.getItemId() == R.id.item2) {
+            if (!item.isChecked()) {
+                map.setTrafficEnabled(true);
+                item.setChecked(true);
+            } else {
+                map.setTrafficEnabled(false);
+                item.setChecked(false);
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,11 +106,11 @@ public class MainActivity extends AppCompatActivity
         ((EditText) findViewById(R.id.editTextNumberLong)).setText(lng + "");
         ((EditText) findViewById(R.id.editTextNumberAlt)).setText(alt + "");
 
-        if(map!=null){
-            LatLng currentLocation=new LatLng(lat,lng);
+        if (map != null) {
+            LatLng currentLocation = new LatLng(lat, lng);
             map.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
             map.clear();
-            MarkerOptions markerOptions=new MarkerOptions();
+            MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(currentLocation).title("NCKU");
             map.addMarker(markerOptions);
         }

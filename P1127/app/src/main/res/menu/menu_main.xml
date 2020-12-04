@@ -6,4 +6,13 @@
         android:id="@+id/item1"
         android:checkable="true"
         android:title="衛星" />
+    <item
+        android:id="@+id/item2"
+        android:checkable="true"
+        android:title="交通狀況" />
+    <item
+        android:id="@+id/app_bar_switch"
+        android:title="Switch"
+        app:actionLayout="@layout/switch_item"
+        app:showAsAction="always" ></item>
 </menu>
