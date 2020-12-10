@@ -18,14 +18,10 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Surface;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -38,12 +34,8 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Locale;
-
-import static android.view.Surface.ROTATION_180;
 
 //Step 1
 public class MainActivity extends AppCompatActivity
@@ -75,6 +67,8 @@ public class MainActivity extends AppCompatActivity
                 gMap.setTrafficEnabled(false);
                 item.setChecked(false);
             }
+        } else if (item.getItemId() == R.id.item3) {
+            gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 17));
         }
         return super.onOptionsItemSelected(item);
     }
@@ -149,26 +143,17 @@ public class MainActivity extends AppCompatActivity
             Address address1 = address.get(0);
             LatLng newLatLng = new LatLng(address1.getLatitude(), address1.getLongitude());
             if (gMap != null) {
-//                gMap.moveCamera(CameraUpdateFactory.newLatLng(newLatLng));
                 if (searchLocationMarker != null) {
                     searchLocationMarker.remove();
                 }
                 MarkerOptions markerOptions = new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_location));
                 markerOptions.position(newLatLng).title(place);
                 searchLocationMarker = gMap.addMarker(markerOptions);
-//                LatLng centerLatLng = new LatLng((currentLatLng.latitude + newLatLng.latitude) / 2,
-//                        (currentLatLng.longitude + newLatLng.longitude) / 2);
-//                LatLngBounds latLngBounds;
-//                if (currentLatLng.latitude < newLatLng.latitude) {
-//                    latLngBounds = new LatLngBounds(newLatLng, currentLatLng);
-//                } else {
-//                    latLngBounds = new LatLngBounds(currentLatLng, newLatLng);
-//                }
                 LatLngBounds.Builder builder = new LatLngBounds.Builder()
                         .include(searchLocationMarker.getPosition())
                         .include(currentLocationMarker.getPosition());
                 LatLngBounds latLngBounds = builder.build();
-                gMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 80));
+                gMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 80));
                 Location searchLocation = new Location("");
                 searchLocation.setLatitude(address1.getLatitude());
                 searchLocation.setLongitude(address1.getLongitude());
@@ -208,9 +193,8 @@ public class MainActivity extends AppCompatActivity
         }
         if (mValues != null && aValues != null && currentLocationMarker != null) {
             float[] Rotation = new float[9];
-            float[] Inclination = new float[9];
             float[] degree = new float[3];
-            SensorManager.getRotationMatrix(Rotation, Inclination, aValues, mValues);
+            SensorManager.getRotationMatrix(Rotation, null, aValues, mValues);
             SensorManager.getOrientation(Rotation, degree);
             angle = (float) Math.toDegrees(degree[0]);
             if ((angle + "").equals("-0.0")) {
@@ -224,6 +208,5 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
     }
 }
