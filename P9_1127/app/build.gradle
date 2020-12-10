@@ -7,7 +7,7 @@ android {
     buildToolsVersion "30.0.2"
 
     defaultConfig {
-        applicationId "ncku.geomatics.p9_1127"
+        applicationId "ncku.geomatics.p1127"
         minSdkVersion 22
         targetSdkVersion 30
         versionCode 1
