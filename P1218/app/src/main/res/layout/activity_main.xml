@@ -55,10 +55,9 @@
         android:onClick="frontward"
         android:text="快轉" />
 
-    <CheckBox
-        android:id="@+id/checkBoxLoop"
+    <VideoView
+        android:id="@+id/videoView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="重複播放" />
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

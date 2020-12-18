@@ -9,7 +9,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.MediaController;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import java.io.IOException;
 
@@ -19,7 +21,9 @@ public class MainActivity extends AppCompatActivity
         MediaPlayer.OnCompletionListener {
 
     Uri songUri = null;
+    Uri videoUri = null;
     MediaPlayer mediaPlayer = null;
+    VideoView vdv = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +32,7 @@ public class MainActivity extends AppCompatActivity
 
         songUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.song);
         ((TextView) findViewById(R.id.textView)).setText(songUri.toString());
+        videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.video);
 
         try {
             isReady = false;
@@ -41,6 +46,10 @@ public class MainActivity extends AppCompatActivity
         } catch (Exception e) {
         }
 
+        vdv = findViewById(R.id.videoView);
+        vdv.setVideoURI(videoUri);
+        MediaController mediaController = new MediaController(this);
+        vdv.setMediaController(mediaController);
     }
 
     public void onClick(View v) {
@@ -90,12 +99,22 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void frontward(View v) {
-        pos = mediaPlayer.getCurrentPosition();
-        pos += 10000;
-        if (pos > mediaPlayer.getDuration()) {
-            pos = mediaPlayer.getDuration();
+        if(mediaPlayer.isPlaying()){
+            pos = mediaPlayer.getCurrentPosition();
+            pos += 10000;
+            if (pos > mediaPlayer.getDuration()) {
+                pos = mediaPlayer.getDuration();
+            }
+            mediaPlayer.seekTo(pos);
         }
-        mediaPlayer.seekTo(pos);
+        if(vdv.isPlaying()){
+            pos = vdv.getCurrentPosition();
+            pos += 10000;
+            if (pos > vdv.getDuration()) {
+                pos = vdv.getDuration();
+            }
+            vdv.seekTo(pos);
+        }
     }
 
     @Override
@@ -108,7 +127,9 @@ public class MainActivity extends AppCompatActivity
             if (requestCode == 456) {
 
             } else if (requestCode == 789) {
-
+                vdv.setVideoURI(uri);
+                MediaController mediaController = new MediaController(this);
+                vdv.setMediaController(mediaController);
             }
         }
     }
