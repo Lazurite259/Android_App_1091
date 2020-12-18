@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Matrix matrix = new Matrix();
                 matrix.postRotate(90);
-                Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix, true);
+                bmp = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix, true);
             } catch (Exception e) {
             }
             ((ImageView) findViewById(R.id.imageView)).setImageBitmap(bmp);
