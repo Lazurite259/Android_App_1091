@@ -8,6 +8,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity
         ((TextView) findViewById(R.id.textView)).setText(songUri.toString());
 
         try {
+            isReady = false;
             mediaPlayer = new MediaPlayer();
             mediaPlayer.setOnPreparedListener(this);
             mediaPlayer.setOnErrorListener(this);
@@ -50,6 +52,50 @@ public class MainActivity extends AppCompatActivity
             it.setType("video/*");
             startActivityForResult(it, 789);
         }
+    }
+
+    int pos = 0;
+    Button btnStart;
+
+    public void start(View v) {
+        btnStart = findViewById(R.id.buttonStart);
+        if (isReady && btnStart.getText().toString().equals("播放")) {
+            mediaPlayer.start();
+            btnStart.setText("暫停");
+        } else if (btnStart.getText().toString().equals("暫停")) {
+            mediaPlayer.pause();
+            pos = mediaPlayer.getCurrentPosition();
+            btnStart.setText("繼續");
+        } else if (btnStart.getText().toString().equals("繼續")) {
+            mediaPlayer.seekTo(pos);
+            mediaPlayer.start();
+            btnStart.setText("暫停");
+        }
+    }
+
+    public void stop(View v) {
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+            btnStart.setText("播放");
+        }
+    }
+
+    public void backward(View v) {
+        pos = mediaPlayer.getCurrentPosition();
+        pos -= 10000;
+        if (pos < 0) {
+            pos = 0;
+        }
+        mediaPlayer.seekTo(pos);
+    }
+
+    public void frontward(View v) {
+        pos = mediaPlayer.getCurrentPosition();
+        pos += 10000;
+        if (pos > mediaPlayer.getDuration()) {
+            pos = mediaPlayer.getDuration();
+        }
+        mediaPlayer.seekTo(pos);
     }
 
     @Override
@@ -77,8 +123,11 @@ public class MainActivity extends AppCompatActivity
         return false;
     }
 
+    boolean isReady = false;
+
     @Override
     public void onPrepared(MediaPlayer mp) {
-        mediaPlayer.start();
+//        mediaPlayer.start();
+        isReady = true;
     }
 }
