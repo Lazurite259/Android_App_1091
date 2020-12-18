@@ -14,9 +14,16 @@
         android:onClick="onClick"
         android:text="拍照" />
 
+    <Button
+        android:id="@+id/buttonSelect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onClick2"
+        android:text="選取" />
+
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         tools:srcCompat="@tools:sample/avatars" />
 </LinearLayout>
