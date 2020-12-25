@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -17,6 +18,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     SQLiteDatabase db = null;
     SimpleCursorAdapter sca = null;
+    Cursor c = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,15 +33,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "email VARCHAR(32))";
         db.execSQL(s);
 
-        addData("孫小小","(02)23963257","small@flag.com.tw");
-        Cursor c = db.rawQuery("SELECT * FROM table2", null);
+//        addData("孫小小", "(02)23963257", "small@flag.com.tw");
+        c = db.rawQuery("SELECT * FROM table2", null);
         sca = new SimpleCursorAdapter(this,
                 R.layout.item,
                 c,
                 new String[]{"name", "phone", "email"},
                 new int[]{R.id.textViewName, R.id.textViewPhone, R.id.textViewEmail},
                 0);
-        ListView lv=findViewById(R.id.listView);
+        ListView lv = findViewById(R.id.listView);
         lv.setAdapter(sca);
         lv.setOnItemClickListener(this);
 
@@ -67,8 +69,49 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         db.insert("table2", null, cv);
     }
 
+    public void insertData(View v) {
+        String n = ((EditText) findViewById(R.id.editTextName)).getText().toString();
+        String p = ((EditText) findViewById(R.id.editTextPhone)).getText().toString();
+        String e = ((EditText) findViewById(R.id.editTextEmail)).getText().toString();
+        addData(n, p, e);
+        c = db.rawQuery("SELECT * FROM table2", null);
+        sca.changeCursor(c);
+    }
+
+    void update(String name, String phone, String email, int _id) {
+        ContentValues cv = new ContentValues(3);
+        cv.put("name", name);
+        cv.put("phone", phone);
+        cv.put("email", email);
+        db.update("table2", cv, "_id=" + _id, null);
+    }
+
+    public void updateData(View v) {
+        String n = ((EditText) findViewById(R.id.editTextName)).getText().toString();
+        String p = ((EditText) findViewById(R.id.editTextPhone)).getText().toString();
+        String e = ((EditText) findViewById(R.id.editTextEmail)).getText().toString();
+        int _id = c.getInt(0);
+        update(n, p, e, _id);
+        c = db.rawQuery("SELECT * FROM table2", null);
+        sca.changeCursor(c);
+    }
+
+    void delete(int _id){
+        db.delete("table2","_id="+_id,null);
+    }
+
+    public void deleteData(View v){
+        int _id = c.getInt(0);
+        delete(_id);
+        c = db.rawQuery("SELECT * FROM table2", null);
+        sca.changeCursor(c);
+    }
+
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+        c.moveToPosition(position);
+        ((EditText) findViewById(R.id.editTextName)).setText(c.getString(1));
+        ((EditText) findViewById(R.id.editTextPhone)).setText(c.getString(2));
+        ((EditText) findViewById(R.id.editTextEmail)).setText(c.getString(3));
     }
 }
