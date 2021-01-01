@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         db = openOrCreateDatabase("DB", Context.MODE_PRIVATE, null);
-        String s = "CREATE TABLE IF NOT EXISTS test1" +
+        String s = "CREATE TABLE IF NOT EXISTS test2" +
                 "(_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "name VARCHAR(32)," +
                 "image VARCHAR(32)," +
@@ -29,11 +29,11 @@ public class MainActivity extends AppCompatActivity {
                 "mode VARCHAR(16))";
         db.execSQL(s);
 
-        Cursor c=db.rawQuery("SELECT * FROM test1", null);
+        Cursor c=db.rawQuery("SELECT * FROM test2", null);
         if(c.getCount()==0){
-            addData("bear", R.drawable.bear, "This is a bear.", false);
-            addData("elf", R.drawable.elf, "This is an elf.", true);
-            addData("star", R.drawable.star, "This is a star.", false);
+            addData("bear", R.drawable.bear, "This is a bear.", "false");
+            addData("elf", R.drawable.elf, "This is an elf.", "true");
+            addData("star", R.drawable.star, "This is a star.", "false");
         }
     }
 
@@ -43,12 +43,12 @@ public class MainActivity extends AppCompatActivity {
         startActivity(it);
     }
 
-    void addData(String name, int image, String details, boolean mode) {
+    void addData(String name, int image, String details, String mode) {
         ContentValues cv = new ContentValues(3);
         cv.put("name", name);
         cv.put("image", image);
         cv.put("details", details);
         cv.put("mode", mode);
-        db.insert("test1", null, cv);
+        db.insert("test2", null, cv);
     }
 }
