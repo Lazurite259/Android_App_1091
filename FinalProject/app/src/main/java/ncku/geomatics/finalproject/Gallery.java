@@ -33,7 +33,7 @@ public class Gallery extends AppCompatActivity implements AdapterView.OnItemClic
                 c,
                 new String[]{"name", "image"},
                 new int[]{R.id.textView, R.id.imageView},
-                0){
+                0) {
             @Override
             public boolean isEnabled(int position) {
                 c.moveToPosition(position);
@@ -43,24 +43,25 @@ public class Gallery extends AppCompatActivity implements AdapterView.OnItemClic
                     return true;
                 }
             }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                if (c.getString(c.getColumnIndex("mode")).equals("false")) {
+                    view.setAlpha((float) 0.5);
+                } else {
+                    view.setAlpha((float) 1);
+                }
+                return view;
+            }
         };
         gv = findViewById(R.id.gridView);
         gv.setAdapter(sca);
-//        for (int i = 0; i < c.getCount(); i++) {
-//            c.moveToPosition(i);
-//            if (c.getString(c.getColumnIndex("mode")).equals("false")) {
-//                Toast.makeText(this, Integer.toString(i), Toast.LENGTH_SHORT).show();
-//                gv.getChildAt(0).setEnabled(false);
-//            } else {
-//                Toast.makeText(this, Integer.toString(i), Toast.LENGTH_SHORT).show();
-//                gv.getChildAt(1).setEnabled(true);
-//            }
-//        }
         gv.setOnItemClickListener(this);
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Toast.makeText(this, Integer.toString(position), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, Integer.toString(position), Toast.LENGTH_SHORT).show();
     }
 }
