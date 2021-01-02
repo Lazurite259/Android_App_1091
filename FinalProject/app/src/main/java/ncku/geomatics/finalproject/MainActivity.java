@@ -37,10 +37,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void onClick(View v) {
+    public void openGallery(View v) {
         Intent it = new Intent();
         it.setClass(this, Gallery.class);
         startActivity(it);
+    }
+
+    public void startGame(View v) {
+        Intent it2 = new Intent();
+        it2.setClass(this, Game.class);
+        startActivity(it2);
     }
 
     void addData(String name, int image, String details, String mode) {

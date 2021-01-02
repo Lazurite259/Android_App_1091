@@ -1,0 +1,4 @@
+#Sat Jan 02 20:33:42 CST 2021
+base.0=/Users/ryanchou/Desktop/主畫面/app/build/intermediates/dex/debug/mergeDexDebug/classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
