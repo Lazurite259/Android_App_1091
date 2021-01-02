@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">FinalProject</string>
     <string name="title_activity_maps">Map</string>
+    <string name="rthgrg">x:</string>
+    <string name="rfe">得分:</string>
+    <string name="wrw">時間:</string>
 </resources>

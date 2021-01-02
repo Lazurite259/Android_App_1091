@@ -1,4 +1,4 @@
-package ncku.geomatics.finalproject;
+package flag.com.a1231;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -68,7 +68,7 @@ class Timer {
     }
 }
 
-public class Game extends AppCompatActivity implements
+public class MainActivity extends AppCompatActivity implements
         OnTouchListener,
         SensorEventListener {
 
