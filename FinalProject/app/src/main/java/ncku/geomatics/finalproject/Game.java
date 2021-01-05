@@ -1,9 +1,14 @@
 package ncku.geomatics.finalproject;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -59,6 +64,10 @@ class Timer {
         paused = true;
     }
 
+    public void destroyed() {
+        handler.removeCallbacks(task);
+    }
+
     public Timer(Runnable runnable, int interval, boolean started) {
         handler = new Handler();
         this.runnable = runnable;
@@ -70,8 +79,16 @@ class Timer {
 
 public class Game extends AppCompatActivity implements
         OnTouchListener,
-        SensorEventListener {
+        SensorEventListener,
+        DialogInterface.OnClickListener {
 
+    //開時遊戲要計時的參數
+    int pp;
+    String p;
+    //雙向對話((遊戲開始前出現
+    AlertDialog.Builder bdr2;
+    //雙向對話((遊戲結束後出現
+    AlertDialog.Builder bdr;
     //時間
     int t = 0;
     //震動
@@ -79,15 +96,16 @@ public class Game extends AppCompatActivity implements
     //得分變數
     int score = 0;
 
-    TextView tv1, tv2, tv4;
-    ConstraintLayout.LayoutParams params, params2;
-    ImageView iv2;
+    TextView tv1, tv2, tv3, tv4;
+    ImageView iv1, iv2, iv3;
+    ConstraintLayout.LayoutParams params;
 
+    @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //在代碼中設置字體顏色
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_game);
         tv1 = findViewById(R.id.textView);
         tv1.setTextColor(Color.RED);
         tv2 = findViewById(R.id.textView2);
@@ -96,7 +114,7 @@ public class Game extends AppCompatActivity implements
         tv4.setTextColor(Color.DKGRAY);
 
         //打地鼠背景
-        ImageView iv1 = findViewById(R.id.imageView);
+        iv1 = findViewById(R.id.imageView);
         iv1.setScaleType(ImageView.ScaleType.FIT_XY);
 
         //地鼠位置
@@ -109,16 +127,30 @@ public class Game extends AppCompatActivity implements
         sm.registerListener(this, sr1, SensorManager.SENSOR_DELAY_NORMAL);
 
         //震動
-        Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+        //雙向對話((遊戲結束前
+        bdr = new AlertDialog.Builder(this);
+        bdr.setTitle("遊戲資訊");
+        bdr.setPositiveButton("了解", this);
+        bdr.setCancelable(false);
+
+        //雙向對話((遊戲開始前
+        bdr2 = new AlertDialog.Builder(this);
+        bdr2.setTitle("開始遊戲");
+        bdr2.setMessage("90s內得到3分即贏得遊戲\n加油~~");
+        bdr2.setPositiveButton("了解", this);
+        bdr2.setCancelable(false);
 
         //監聽打地鼠背景
         iv1.setOnTouchListener(this);
+
+        iv3 = findViewById(R.id.imageView3);
+        tv3 = findViewById(R.id.textView3);
     }
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        ImageView iv3 = findViewById(R.id.imageView3);
-
         iv3.setImageResource(R.drawable.gg);
         Animation am = new RotateAnimation(0, -30, 250, 100);
         am.setDuration(300);
@@ -138,8 +170,7 @@ public class Game extends AppCompatActivity implements
         //碰到地鼠
         float c = 0;
         float d = 0;
-        int b = 0;
-        b = (int) (Math.floor(Math.random() * 9) + 1);
+        int b = (int) (Math.floor(Math.random() * 9) + 1);
         switch (b) {
             //地鼠
             //左上
@@ -200,31 +231,28 @@ public class Game extends AppCompatActivity implements
             //得分+1
             score += 1;
             tv4.setText("得分" + score);
-            //槌子
         }
         return true;
     }
 
     //槌子的座標轉換
     float xp = 0, yp = 0;
+    ConstraintLayout.LayoutParams params2;
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        TextView tv3 = findViewById(R.id.textView3);
         float x = event.values[0];
         float y = event.values[1];
         float z = event.values[2];
         tv3.setText("x=" + x + "\ny=" + y + "\nz=" + z);
 
         //槌子
-        ImageView iv3 = findViewById(R.id.imageView3);
         params2 = (ConstraintLayout.LayoutParams) iv3.getLayoutParams();
 
         if (x > 0 && y == 0) {
             xp += x / 100;
             params2.verticalBias = (10 + yp) / 20f;
             params2.horizontalBias = (10 - xp) / 20f;
-
             iv3.setLayoutParams(params2);
         }
         if (x > 0 && y < 0) {
@@ -299,12 +327,9 @@ public class Game extends AppCompatActivity implements
     }
 
     public void change() {
-        ImageView iv2 = findViewById(R.id.imageView2);
-        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) iv2.getLayoutParams();
         float c = 0;
         float d = 0;
-        int b = 0;
-        b = (int) (Math.floor(Math.random() * 9) + 1);
+        int b = (int) (Math.floor(Math.random() * 9) + 1);
         switch (b) {
             //地鼠
             //左上
@@ -358,14 +383,16 @@ public class Game extends AppCompatActivity implements
         iv2.setLayoutParams(params);
     }
 
-    //地鼠每隔4秒換位置
+    //地鼠每隔3秒換位置
     Timer changeplace = new Timer(new Runnable() {
         @Override
         public void run() {
             change();
         }
-    }, 4000, true);
+    }, 3000, true);
 
+
+    //計時
     Timer calculate = new Timer(new Runnable() {
         @Override
         public void run() {
@@ -374,7 +401,45 @@ public class Game extends AppCompatActivity implements
                 t += 1;
                 tv5.setText("時間:" + t);
             }
+            if (t == 90) {
+                calculate.destroyed();
+                calculate.stopTimer();
+                bdr.setMessage("遊戲已進行:" + t + "\n得分:"
+                        + score);
+                bdr.show();
+            }
         }
     }, 1000, true);
 
+
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        if (which == DialogInterface.BUTTON_POSITIVE) {
+            if (t == 90) {
+                Toast.makeText(this, "超過90s", Toast.LENGTH_SHORT).show();
+                //初始化t
+                t = 0;
+                //從打地鼠的畫面換到googleMap畫面 ((遊戲時間90s到
+                Intent it = new Intent();
+                it.setClass(this, Map.class);
+                startActivity(it);
+            }
+        }
+        if (which == DialogInterface.BUTTON_POSITIVE) {
+            calculate.startTimer();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+
+            p = data.getStringExtra("開啟遊戲");
+            pp = Integer.parseInt(p);
+            Toast.makeText(this, "hh", Toast.LENGTH_SHORT).show();
+            tv2.setText("cc");
+            Toast.makeText(this, String.valueOf(pp), Toast.LENGTH_SHORT).show();
+        }
+    }
 }
