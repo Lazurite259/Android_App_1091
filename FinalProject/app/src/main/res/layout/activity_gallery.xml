@@ -12,6 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="false"
+        android:gravity="center|center_horizontal"
         android:numColumns="2"
         android:scrollbars="vertical" />
 </LinearLayout>

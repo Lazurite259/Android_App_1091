@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
         //建資料庫
         db = openOrCreateDatabase("DB", Context.MODE_PRIVATE, null);
-        String s = "CREATE TABLE IF NOT EXISTS testTable" +
+        String s = "CREATE TABLE IF NOT EXISTS table1" +
                 "(_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "name VARCHAR(32)," +
                 "image VARCHAR(32)," +
@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         db.execSQL(s);
 
         //當資料庫無資料時，建一個table
-        Cursor c = db.rawQuery("SELECT * FROM testTable", null);
+        Cursor c = db.rawQuery("SELECT * FROM table1", null);
         if (c.getCount() == 0) {
             addData("國立成功大學附設臺南市私立員工子女幼兒園", R.drawable.kindergarten, "可以在這裡撿到凱偉老師的小孩，還有你不想努力的機會。", "false");
             addData("成功大學圖書館", R.drawable.library, "明明晚上九點就閉館了，但還是會有人徘徊的地方。", "false");
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     //開啟遊戲畫面
     public void startGame(View v) {
         Intent it2 = new Intent();
-        it2.setClass(this, Game.class);
+        it2.setClass(this, Map.class);
         startActivity(it2);
     }
 
@@ -69,6 +69,6 @@ public class MainActivity extends AppCompatActivity {
         cv.put("image", image);
         cv.put("details", details);
         cv.put("mode", mode);
-        db.insert("testTable", null, cv);
+        db.insert("table1", null, cv);
     }
 }

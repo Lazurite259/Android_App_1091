@@ -28,7 +28,7 @@ public class Gallery extends AppCompatActivity implements AdapterView.OnItemClic
         setTitle("圖鑑");
         db = openOrCreateDatabase("DB", Context.MODE_PRIVATE, null);
         //取得資料庫資料匯入Grid
-        c = db.rawQuery("SELECT * FROM testTable", null);
+        c = db.rawQuery("SELECT * FROM table1", null);
         sca = new SimpleCursorAdapter(this,
                 R.layout.grid_item,
                 c,

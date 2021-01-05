@@ -26,6 +26,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import java.util.Objects;
+
 import static androidx.constraintlayout.widget.Constraints.*;
 
 //Timer的class，固定時間呼叫
@@ -104,8 +106,9 @@ public class Game extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //在代碼中設置字體顏色
         setContentView(R.layout.activity_game);
+        setTitle("殲滅地精大作戰");
+        //在代碼中設置字體顏色
         tv1 = findViewById(R.id.textView);
         tv1.setTextColor(Color.RED);
         tv2 = findViewById(R.id.textView2);
@@ -141,6 +144,7 @@ public class Game extends AppCompatActivity implements
         bdr2.setMessage("90s內得到3分即贏得遊戲\n加油~~");
         bdr2.setPositiveButton("了解", this);
         bdr2.setCancelable(false);
+        bdr2.show();
 
         //監聽打地鼠背景
         iv1.setOnTouchListener(this);
@@ -414,32 +418,22 @@ public class Game extends AppCompatActivity implements
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
-        if (which == DialogInterface.BUTTON_POSITIVE) {
+        if (dialog == bdr && which == DialogInterface.BUTTON_POSITIVE) {
             if (t == 90) {
-                Toast.makeText(this, "超過90s", Toast.LENGTH_SHORT).show();
-                //初始化t
-                t = 0;
-                //從打地鼠的畫面換到googleMap畫面 ((遊戲時間90s到
-                Intent it = new Intent();
-                it.setClass(this, Map.class);
-                startActivity(it);
+                Toast.makeText(this, "挑戰失敗", Toast.LENGTH_SHORT).show();
+                setResult(RESULT_CANCELED);
+                finish();
+            }
+            else if(score>=3){
+                Toast.makeText(this, "挑戰成功", Toast.LENGTH_SHORT).show();
+                setResult(RESULT_OK);
+                finish();
             }
         }
-        if (which == DialogInterface.BUTTON_POSITIVE) {
+        else if (dialog == bdr2 && which == DialogInterface.BUTTON_POSITIVE) {
+            //初始化t
+            t = 0;
             calculate.startTimer();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-
-            p = data.getStringExtra("開啟遊戲");
-            pp = Integer.parseInt(p);
-            Toast.makeText(this, "hh", Toast.LENGTH_SHORT).show();
-            tv2.setText("cc");
-            Toast.makeText(this, String.valueOf(pp), Toast.LENGTH_SHORT).show();
         }
     }
 }
