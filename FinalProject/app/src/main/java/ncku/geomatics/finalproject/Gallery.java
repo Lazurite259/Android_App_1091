@@ -27,7 +27,8 @@ public class Gallery extends AppCompatActivity implements AdapterView.OnItemClic
 
         setTitle("圖鑑");
         db = openOrCreateDatabase("DB", Context.MODE_PRIVATE, null);
-        c = db.rawQuery("SELECT * FROM test2", null);
+        //取得資料庫資料匯入Grid
+        c = db.rawQuery("SELECT * FROM testTable", null);
         sca = new SimpleCursorAdapter(this,
                 R.layout.grid_item,
                 c,
@@ -36,6 +37,7 @@ public class Gallery extends AppCompatActivity implements AdapterView.OnItemClic
                 0) {
             @Override
             public boolean isEnabled(int position) {
+                //當mode為false時，關閉點選功能
                 c.moveToPosition(position);
                 if (c.getString(c.getColumnIndex("mode")).equals("false")) {
                     return false;
@@ -47,6 +49,7 @@ public class Gallery extends AppCompatActivity implements AdapterView.OnItemClic
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
+                //當mode為false時，透明度為50%
                 if (c.getString(c.getColumnIndex("mode")).equals("false")) {
                     view.setAlpha((float) 0.5);
                 } else {
