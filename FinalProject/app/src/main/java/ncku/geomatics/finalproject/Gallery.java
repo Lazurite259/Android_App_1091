@@ -3,6 +3,7 @@ package ncku.geomatics.finalproject;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -66,5 +67,9 @@ public class Gallery extends AppCompatActivity implements AdapterView.OnItemClic
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //        Toast.makeText(this, Integer.toString(position), Toast.LENGTH_SHORT).show();
+        Intent it = new Intent();
+        it.setClass(this, Details.class);
+        it.putExtra("position", position);
+        startActivity(it);
     }
 }
