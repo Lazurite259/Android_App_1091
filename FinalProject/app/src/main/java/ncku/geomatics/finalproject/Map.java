@@ -75,11 +75,13 @@ public class Map extends AppCompatActivity implements
         SupportMapFragment smf = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         smf.getMapAsync(this);
 
+        //取得資料
         db = openOrCreateDatabase("DB", Context.MODE_PRIVATE, null);
-        c = db.rawQuery("SELECT * FROM table1", null);
+        c = db.rawQuery("SELECT * FROM table3", null);
     }
 
     Location currentLocation;
+    Location targetLocation = new Location("");
     LatLng currentLatLng;
 
     @Override
@@ -96,76 +98,75 @@ public class Map extends AppCompatActivity implements
             MarkerOptions markerOptions = new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_navigation));
             markerOptions.position(currentLatLng).title("目前位置");
             currentLocationMarker = gMap.addMarker(markerOptions);
-//            builder.include(currentLocationMarker.getPosition());
-//            for (int i = 0; i < c.getCount(); i++) {
-//                targetLocation.setLatitude(Double.parseDouble(targetLat[i]));
-//                targetLocation.setLongitude(Double.parseDouble(targetLng[i]));
-//                float distance = currentLocation.distanceTo(targetLocation);
-//                if (distance <= 15) {
-//                    target = i + 1;
-//                    //從googleMap畫面換到打地鼠的畫面
-//                    Intent it = new Intent();
-//                    it.setClass(this, Game.class);
-//                    startActivityForResult(it, 123);
-//                }
-//            }
+            //顯示範圍包括現在位置與地標
+            builder.include(currentLocationMarker.getPosition());
+            LatLngBounds latLngBounds = builder.build();
+            int width = getResources().getDisplayMetrics().widthPixels;
+            gMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, width, width, 25));
+            for (int i = 0; i < c.getCount(); i++) {
+                c.moveToPosition(i);
+                newLatitude = c.getDouble(c.getColumnIndex("latitude"));
+                newLongitude = c.getDouble(c.getColumnIndex("longitude"));
+                targetLocation.setLatitude(newLatitude);
+                targetLocation.setLongitude(newLongitude);
+                //偵測是否接近地標
+                float distance = currentLocation.distanceTo(targetLocation);
+                if (distance <= (float) 15) {
+                    target = i + 1;
+                    //從googleMap畫面換到打地鼠的畫面
+                    Intent it = new Intent();
+                    it.setClass(this, Game.class);
+                    startActivityForResult(it, 123);
+                }
+            }
         }
     }
 
     GoogleMap gMap = null;
-    Location targetLocation;
     int target;
-    String[] targetLat = new String[0];
-    String[] targetLng = new String[0];
+    double newLatitude, newLongitude;
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         gMap = googleMap;
         gMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        Geocoder geo = new Geocoder(this, Locale.getDefault());
-        StringBuilder str = new StringBuilder();
         try {
             String place;
             int i;
             builder = new LatLngBounds.Builder();
             for (i = 0; i < c.getCount(); i++) {
+                //從資料庫取座標
                 c.moveToPosition(i);
-                place = c.getString(1);
-                str.append(place);
-                List<Address> address = geo.getFromLocationName(place, 1);
-                Address address1 = address.get(0);
-                LatLng newLatLng = new LatLng(address1.getLatitude(), address1.getLongitude());
+                place = c.getString(c.getColumnIndex("name"));
+                newLatitude = c.getDouble(c.getColumnIndex("latitude"));
+                newLongitude = c.getDouble(c.getColumnIndex("longitude"));
                 if (gMap != null) {
+                    LatLng newLatLng = new LatLng(newLatitude, newLongitude);
                     MarkerOptions markerOptions = new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_location));
                     markerOptions.position(newLatLng).title(place);
                     locationMarker = gMap.addMarker(markerOptions);
                     builder.include(locationMarker.getPosition());
                 }
-//                targetLat[i] = String.valueOf(address1.getLatitude());
-//                targetLng[i] = String.valueOf(address1.getLongitude());
-//                targetLocation = new Location("");
-//                targetLocation.setLatitude(address1.getLatitude());
-//                targetLocation.setLongitude(address1.getLongitude());
             }
+            //顯示範圍包括所有地標
             LatLngBounds latLngBounds = builder.build();
             int width = getResources().getDisplayMetrics().widthPixels;
             gMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, width, width, 25));
         } catch (Exception e) {
-            str.append(e.toString());
-            ((TextView) findViewById(R.id.textView6)).setText(str);
         }
     }
 
     void update(String mode, int _id) {
         ContentValues cv = new ContentValues(1);
         cv.put("mode", mode);
-        db.update("table1", cv, "_id=" + _id, null);
+        db.update("table3", cv, "_id=" + _id, null);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 123 && resultCode == RESULT_OK) {
+            //遊戲成功即解鎖圖鑑
             update("true", target);
         } else if (requestCode == 123 && resultCode == RESULT_CANCELED) {
         }

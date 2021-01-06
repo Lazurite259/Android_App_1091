@@ -29,7 +29,7 @@ public class Gallery extends AppCompatActivity implements AdapterView.OnItemClic
         setTitle("圖鑑");
         db = openOrCreateDatabase("DB", Context.MODE_PRIVATE, null);
         //取得資料庫資料匯入Grid
-        c = db.rawQuery("SELECT * FROM table1", null);
+        c = db.rawQuery("SELECT * FROM table3", null);
         sca = new SimpleCursorAdapter(this,
                 R.layout.grid_item,
                 c,
@@ -66,10 +66,13 @@ public class Gallery extends AppCompatActivity implements AdapterView.OnItemClic
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//        Toast.makeText(this, Integer.toString(position), Toast.LENGTH_SHORT).show();
         Intent it = new Intent();
         it.setClass(this, Details.class);
         it.putExtra("position", position);
         startActivity(it);
+    }
+
+    public void returnMain(View v) {
+        finish();
     }
 }

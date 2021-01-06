@@ -135,7 +135,7 @@ public class Game extends AppCompatActivity implements
         //雙向對話((遊戲結束前
         bdr = new AlertDialog.Builder(this);
         bdr.setTitle("遊戲資訊");
-        bdr.setPositiveButton("了解", this);
+        bdr.setNegativeButton("結束", this);
         bdr.setCancelable(false);
 
         //雙向對話((遊戲開始前
@@ -234,7 +234,7 @@ public class Game extends AppCompatActivity implements
             vib.vibrate(300);
             //得分+1
             score += 1;
-            tv4.setText("得分" + score);
+            tv4.setText("得分：" + score);
         }
         return true;
     }
@@ -308,19 +308,19 @@ public class Game extends AppCompatActivity implements
             iv3.setLayoutParams(params2);
         }
 
-        if ((int) yp == 10) {
-            yp = -10f;
+        if ((int) yp > 10) {
+            yp = 10;
             iv3.setLayoutParams(params2);
-        } else if ((int) yp == -10) {
-            yp = 10f;
+        } else if ((int) yp < -10) {
+            yp = -10;
             iv3.setLayoutParams(params2);
         }
 
-        if ((int) xp == -10) {
-            xp = 10f;
+        if ((int) xp < -10) {
+            xp = -10;
             iv3.setLayoutParams(params2);
-        } else if ((int) xp == 10) {
-            xp = -10f;
+        } else if ((int) xp > 10) {
+            xp = 10;
             iv3.setLayoutParams(params2);
         }
     }
@@ -403,12 +403,12 @@ public class Game extends AppCompatActivity implements
             TextView tv5 = findViewById(R.id.textView5);
             if (t < 90) {
                 t += 1;
-                tv5.setText("時間:" + t);
+                tv5.setText("時間：" + t);
             }
             if (t == 90) {
                 calculate.destroyed();
                 calculate.stopTimer();
-                bdr.setMessage("遊戲已進行:" + t + "\n得分:"
+                bdr.setMessage("遊戲已進行:" + t + "秒\n得分:"
                         + score);
                 bdr.show();
             }
@@ -418,19 +418,19 @@ public class Game extends AppCompatActivity implements
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
-        if (dialog == bdr && which == DialogInterface.BUTTON_POSITIVE) {
+        if (which == DialogInterface.BUTTON_NEGATIVE) {
             if (t == 90) {
+                //90s即挑戰失敗
                 Toast.makeText(this, "挑戰失敗", Toast.LENGTH_SHORT).show();
                 setResult(RESULT_CANCELED);
                 finish();
-            }
-            else if(score>=3){
+            } else if (score >= 3) {
+                //得分大於等於3即挑戰成功
                 Toast.makeText(this, "挑戰成功", Toast.LENGTH_SHORT).show();
                 setResult(RESULT_OK);
                 finish();
             }
-        }
-        else if (dialog == bdr2 && which == DialogInterface.BUTTON_POSITIVE) {
+        } else if (which == DialogInterface.BUTTON_POSITIVE) {
             //初始化t
             t = 0;
             calculate.startTimer();

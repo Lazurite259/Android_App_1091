@@ -7,6 +7,14 @@
     android:orientation="vertical"
     tools:context=".Gallery">
 
+    <Button
+        android:id="@+id/buttonReturn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="returnMain"
+        android:text="返回"
+        android:textSize="18sp" />
+
     <GridView
         android:id="@+id/gridView"
         android:layout_width="wrap_content"

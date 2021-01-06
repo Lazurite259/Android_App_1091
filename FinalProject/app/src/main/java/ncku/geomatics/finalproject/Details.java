@@ -25,8 +25,9 @@ public class Details extends AppCompatActivity {
         Intent it = new Intent();
         int position = it.getIntExtra("position", 0);
         db = openOrCreateDatabase("DB", Context.MODE_PRIVATE, null);
-        c = db.rawQuery("SELECT * FROM table1", null);
+        c = db.rawQuery("SELECT * FROM table3", null);
         c.moveToPosition(position);
+        setTitle(c.getString(c.getColumnIndex("name")));
         ((ImageView) findViewById(R.id.imageViewTarget)).setImageResource(c.getInt(c.getColumnIndex("image")));
         ((TextView) findViewById(R.id.textViewName)).setText(c.getString(c.getColumnIndex("name")));
         ((TextView) findViewById(R.id.textViewDetails)).setText(c.getString(c.getColumnIndex("details")));
