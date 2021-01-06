@@ -77,7 +77,7 @@ public class Map extends AppCompatActivity implements
 
         //取得資料
         db = openOrCreateDatabase("DB", Context.MODE_PRIVATE, null);
-        c = db.rawQuery("SELECT * FROM table3", null);
+        c = db.rawQuery("SELECT * FROM table5", null);
     }
 
     Location currentLocation;
@@ -111,12 +111,15 @@ public class Map extends AppCompatActivity implements
                 targetLocation.setLongitude(newLongitude);
                 //偵測是否接近地標
                 float distance = currentLocation.distanceTo(targetLocation);
-                if (distance <= (float) 15) {
+                if (distance <= (float) 30 && c.getString(c.getColumnIndex("mode")).equals("false")) {
                     target = i + 1;
                     //從googleMap畫面換到打地鼠的畫面
                     Intent it = new Intent();
                     it.setClass(this, Game.class);
-                    startActivityForResult(it, 123);
+                    it.putExtra("target", target);
+                    startActivity(it);
+                    onStop();
+                    finish();
                 }
             }
         }
@@ -156,19 +159,15 @@ public class Map extends AppCompatActivity implements
         }
     }
 
-    void update(String mode, int _id) {
-        ContentValues cv = new ContentValues(1);
-        cv.put("mode", mode);
-        db.update("table3", cv, "_id=" + _id, null);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 123 && resultCode == RESULT_OK) {
-            //遊戲成功即解鎖圖鑑
-            update("true", target);
-        } else if (requestCode == 123 && resultCode == RESULT_CANCELED) {
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode == 123 && resultCode == RESULT_OK) {
+//            //遊戲成功即解鎖圖鑑
+////            update("true", target);
+//            onResume();
+//        } else if (requestCode == 123 && resultCode == RESULT_CANCELED) {
+//            onResume();
+//        }
+//    }
 }

@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
         //建資料庫
         db = openOrCreateDatabase("DB", Context.MODE_PRIVATE, null);
-        String s = "CREATE TABLE IF NOT EXISTS table3" +
+        String s = "CREATE TABLE IF NOT EXISTS table5" +
                 "(_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "name VARCHAR(32)," +
                 "image VARCHAR(32)," +
@@ -35,9 +35,9 @@ public class MainActivity extends AppCompatActivity {
         db.execSQL(s);
 
         //當資料庫無資料時，建一個table
-        Cursor c = db.rawQuery("SELECT * FROM table3", null);
+        Cursor c = db.rawQuery("SELECT * FROM table5", null);
         if (c.getCount() == 0) {
-            addData("國立成功大學附設臺南市私立員工子女幼兒園", R.drawable.kindergarten, "可以在這裡撿到凱偉老師的小孩，還有你不想努力的機會。", 22.9993618, 120.218629, "true");
+            addData("國立成功大學附設臺南市私立員工子女幼兒園", R.drawable.kindergarten, "可以在這裡撿到凱偉老師的小孩，還有你不想努力的機會。", 22.9993618, 120.218629, "false");
             addData("成功大學圖書館", R.drawable.library, "明明晚上九點就閉館了，但還是會有人徘徊的地方。", 23.0000038, 120.219858, "false");
             addData("成大理學教學大樓", R.drawable.ncku_eds, "當化學系跟物理系有了這一棟，就不難理解為什麼他們尾牙都可以辦一整條街。", 23.0002745, 120.218875, "false");
             addData("成功大學計算機與網路中心", R.drawable.computer, "每個大一新生的早八惡夢來源。", 22.9981421, 120.218543, "false");
@@ -73,6 +73,6 @@ public class MainActivity extends AppCompatActivity {
         cv.put("latitude", latitude);
         cv.put("longitude", longitude);
         cv.put("mode", mode);
-        db.insert("table3", null, cv);
+        db.insert("table5", null, cv);
     }
 }

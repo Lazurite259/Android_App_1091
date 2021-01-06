@@ -22,10 +22,10 @@ public class Details extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
-        Intent it = new Intent();
+        Intent it = getIntent();
         int position = it.getIntExtra("position", 0);
         db = openOrCreateDatabase("DB", Context.MODE_PRIVATE, null);
-        c = db.rawQuery("SELECT * FROM table3", null);
+        c = db.rawQuery("SELECT * FROM table5", null);
         c.moveToPosition(position);
         setTitle(c.getString(c.getColumnIndex("name")));
         ((ImageView) findViewById(R.id.imageViewTarget)).setImageResource(c.getInt(c.getColumnIndex("image")));

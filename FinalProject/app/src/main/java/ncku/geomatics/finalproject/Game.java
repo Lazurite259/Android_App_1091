@@ -6,9 +6,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -101,6 +104,8 @@ public class Game extends AppCompatActivity implements
     TextView tv1, tv2, tv3, tv4;
     ImageView iv1, iv2, iv3;
     ConstraintLayout.LayoutParams params;
+    SQLiteDatabase db = null;
+    Cursor c = null;
 
     @SuppressLint("ResourceType")
     @Override
@@ -108,6 +113,7 @@ public class Game extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         setTitle("殲滅地精大作戰");
+        this.setFinishOnTouchOutside(false);
         //在代碼中設置字體顏色
         tv1 = findViewById(R.id.textView);
         tv1.setTextColor(Color.RED);
@@ -308,19 +314,19 @@ public class Game extends AppCompatActivity implements
             iv3.setLayoutParams(params2);
         }
 
-        if ((int) yp > 10) {
-            yp = 10;
+        if ((int) yp == 10) {
+            yp = -10f;
             iv3.setLayoutParams(params2);
-        } else if ((int) yp < -10) {
-            yp = -10;
+        } else if ((int) yp == -10) {
+            yp = 10f;
             iv3.setLayoutParams(params2);
         }
 
-        if ((int) xp < -10) {
-            xp = -10;
+        if ((int) xp == -10) {
+            xp = 10f;
             iv3.setLayoutParams(params2);
-        } else if ((int) xp > 10) {
-            xp = 10;
+        } else if ((int) xp == 10) {
+            xp = -10f;
             iv3.setLayoutParams(params2);
         }
     }
@@ -395,7 +401,6 @@ public class Game extends AppCompatActivity implements
         }
     }, 3000, true);
 
-
     //計時
     Timer calculate = new Timer(new Runnable() {
         @Override
@@ -408,13 +413,17 @@ public class Game extends AppCompatActivity implements
             if (t == 90) {
                 calculate.destroyed();
                 calculate.stopTimer();
-                bdr.setMessage("遊戲已進行:" + t + "秒\n得分:"
-                        + score);
+                bdr.setMessage("遊戲已進行:" + t + "秒\n得分:" + score);
+                bdr.show();
+            }
+            if (score >= 3) {
+                calculate.destroyed();
+                calculate.stopTimer();
+                bdr.setMessage("遊戲已進行:" + t + "秒\n得分:" + score);
                 bdr.show();
             }
         }
-    }, 1000, true);
-
+    }, 2000, true);
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
@@ -423,17 +432,29 @@ public class Game extends AppCompatActivity implements
                 //90s即挑戰失敗
                 Toast.makeText(this, "挑戰失敗", Toast.LENGTH_SHORT).show();
                 setResult(RESULT_CANCELED);
-                finish();
             } else if (score >= 3) {
                 //得分大於等於3即挑戰成功
                 Toast.makeText(this, "挑戰成功", Toast.LENGTH_SHORT).show();
                 setResult(RESULT_OK);
-                finish();
+                Intent it = getIntent();
+                int target = it.getIntExtra("target", 0);
+                db = openOrCreateDatabase("DB", Context.MODE_PRIVATE, null);
+                update("true", target);
             }
+            Intent it2 = new Intent();
+            it2.setClass(this, Map.class);
+            startActivity(it2);
+            finish();
         } else if (which == DialogInterface.BUTTON_POSITIVE) {
             //初始化t
             t = 0;
             calculate.startTimer();
         }
+    }
+
+    void update(String mode, int _id) {
+        ContentValues cv = new ContentValues(1);
+        cv.put("mode", mode);
+        db.update("table5", cv, "_id=" + _id, null);
     }
 }
