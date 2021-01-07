@@ -410,13 +410,13 @@ public class Game extends AppCompatActivity implements
                 t += 1;
                 tv5.setText("時間：" + t);
             }
-            if (t == 90) {
+            if (t == 90) { //超過90秒結束
                 calculate.destroyed();
                 calculate.stopTimer();
                 bdr.setMessage("遊戲已進行:" + t + "秒\n得分:" + score);
                 bdr.show();
             }
-            if (score >= 3) {
+            if (score >= 3) { //得分大於3時結束
                 calculate.destroyed();
                 calculate.stopTimer();
                 bdr.setMessage("遊戲已進行:" + t + "秒\n得分:" + score);
@@ -453,6 +453,7 @@ public class Game extends AppCompatActivity implements
     }
 
     void update(String mode, int _id) {
+        //更新是否解鎖地標
         ContentValues cv = new ContentValues(1);
         cv.put("mode", mode);
         db.update("table5", cv, "_id=" + _id, null);

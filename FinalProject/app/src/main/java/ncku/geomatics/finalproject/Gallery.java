@@ -66,12 +66,14 @@ public class Gallery extends AppCompatActivity implements AdapterView.OnItemClic
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        //開啟資訊頁面
         Intent it = new Intent();
         it.setClass(this, Details.class);
         it.putExtra("position", position);
         startActivity(it);
     }
 
+    //返回
     public void returnMain(View v) {
         finish();
     }

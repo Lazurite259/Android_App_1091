@@ -118,7 +118,8 @@ public class Map extends AppCompatActivity implements
                     it.setClass(this, Game.class);
                     it.putExtra("target", target);
                     startActivity(it);
-                    onStop();
+                    //結束執行本頁面
+                    onPause();
                     finish();
                 }
             }
@@ -158,16 +159,4 @@ public class Map extends AppCompatActivity implements
         } catch (Exception e) {
         }
     }
-
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == 123 && resultCode == RESULT_OK) {
-//            //遊戲成功即解鎖圖鑑
-////            update("true", target);
-//            onResume();
-//        } else if (requestCode == 123 && resultCode == RESULT_CANCELED) {
-//            onResume();
-//        }
-//    }
 }

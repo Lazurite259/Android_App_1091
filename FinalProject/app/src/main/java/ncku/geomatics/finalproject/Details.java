@@ -24,6 +24,7 @@ public class Details extends AppCompatActivity {
 
         Intent it = getIntent();
         int position = it.getIntExtra("position", 0);
+        //取得資料庫
         db = openOrCreateDatabase("DB", Context.MODE_PRIVATE, null);
         c = db.rawQuery("SELECT * FROM table5", null);
         c.moveToPosition(position);
@@ -33,6 +34,7 @@ public class Details extends AppCompatActivity {
         ((TextView) findViewById(R.id.textViewDetails)).setText(c.getString(c.getColumnIndex("details")));
     }
 
+    //返回
     public void close(View v) {
         finish();
     }
