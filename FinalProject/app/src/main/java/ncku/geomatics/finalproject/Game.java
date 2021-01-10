@@ -313,7 +313,6 @@ public class Game extends AppCompatActivity implements
             params2.horizontalBias = (10 - xp) / 20f;
             iv3.setLayoutParams(params2);
         }
-
         if ((int) yp == 10) {
             yp = -10f;
             iv3.setLayoutParams(params2);
@@ -321,7 +320,6 @@ public class Game extends AppCompatActivity implements
             yp = 10f;
             iv3.setLayoutParams(params2);
         }
-
         if ((int) xp == -10) {
             xp = 10f;
             iv3.setLayoutParams(params2);
@@ -431,11 +429,9 @@ public class Game extends AppCompatActivity implements
             if (t == 90) {
                 //90s即挑戰失敗
                 Toast.makeText(this, "挑戰失敗", Toast.LENGTH_SHORT).show();
-                setResult(RESULT_CANCELED);
             } else if (score >= 3) {
                 //得分大於等於3即挑戰成功
                 Toast.makeText(this, "挑戰成功", Toast.LENGTH_SHORT).show();
-                setResult(RESULT_OK);
                 Intent it = getIntent();
                 int target = it.getIntExtra("target", 0);
                 db = openOrCreateDatabase("DB", Context.MODE_PRIVATE, null);
